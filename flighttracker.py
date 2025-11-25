@@ -129,7 +129,7 @@ def main():
         filled = int(bar_len * prog)
         bar = "#" * filled + "-" * (bar_len - filled)
 
-        print(f"Progress: [{bar}] {prog*100:5.2f}%\n")
+        print(f"Flight progress: [{bar}] {prog*100:5.2f}%\n")
 
         # Flug fertig?
         if prog >= 1.0:
