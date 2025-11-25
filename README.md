@@ -10,4 +10,4 @@ Flighttracker tries to make it more easy. It is a simple tool in Python 3 that a
 - Possible delay
 - Progress indicator
 
-By default, the tool retrieves the latest data from [https://www.flightradar24.com/37.32,-9.16/8](flightradar24.com) every 180 seconds (3 minutes) and updates the output. Should work with every airline that flightradar24.com lists, I mainly checked with flights by [https://www.condor.com/de](Condor). 
+By default, the tool retrieves the latest data from (https://www.flightradar24.com)[flightradar24.com] every 180 seconds (3 minutes) and updates the output. Should work with every airline that flightradar24.com lists, I mainly checked with flights by (https://www.condor.com/de)[Condor].
