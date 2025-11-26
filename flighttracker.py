@@ -116,7 +116,6 @@ def main():
     print(f"  Scheduled Departure: {conv(dep)}")
     print(f"  Scheduled Arrival  : {conv(arr)}\n")
 
-    # ---------------------- Live-Updates ----------------------
     while True:
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         prog = calc_progress(dep, arr)
@@ -131,7 +130,6 @@ def main():
 
         print(f"Flight progress: [{bar}] {prog*100:5.2f}%\n")
 
-        # Flug fertig?
         if prog >= 1.0:
             print("[*] Plane seems to have landed")
             break
