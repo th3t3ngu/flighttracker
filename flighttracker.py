@@ -33,7 +33,6 @@ def get_flight_id(flight):
         print("[!] No valid API-answer.")
         return None
 
-    # wir suchen "type": "live" → enthält die flight_id
     for item in data["results"]:
         if item["type"] == "live" and "detail" in item:
             flight_id = item["id"]
@@ -57,13 +56,13 @@ def extract_times(info):
 
     t = info.get("time", {})
 
-    # Abflug
+    # Departure
     sched_dep = t.get("scheduled", {}).get("departure")
     real_dep = t.get("real", {}).get("departure")
 
     departure = real_dep or sched_dep
 
-    # Ankunft
+    # Arrival
     sched_arr = t.get("scheduled", {}).get("arrival")
     est_arr = t.get("estimated", {}).get("arrival")
     real_arr = t.get("real", {}).get("arrival")
