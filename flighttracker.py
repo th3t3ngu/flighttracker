@@ -64,19 +64,11 @@ def extract_times(info):
 
     t = info.get("time", {})
 
-<<<<<<< HEAD
-=======
-    # Departure
->>>>>>> 01e80d8f05a9aac63f9126356f97b1dae7e3e09b
     sched_dep = t.get("scheduled", {}).get("departure")
     real_dep = t.get("real", {}).get("departure")
 
     departure = real_dep or sched_dep
 
-<<<<<<< HEAD
-=======
-    # Arrival
->>>>>>> 01e80d8f05a9aac63f9126356f97b1dae7e3e09b
     sched_arr = t.get("scheduled", {}).get("arrival")
     est_arr = t.get("estimated", {}).get("arrival")
     real_arr = t.get("real", {}).get("arrival")
