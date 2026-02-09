@@ -4,6 +4,9 @@ import time
 from datetime import datetime
 import sys
 import os
+import argparse
+
+
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -21,6 +24,25 @@ def conv(ts):
     if not ts:
         return None
     return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+
+
+def send_simplepush(flight, key):
+    url = "https://simplepu.sh"
+    payload = {
+        "key": key,
+        "title": "Plane has landed",
+        "msg": f"The flight {flight} seems to have landed",
+        "event": "landed"
+    }
+
+    try:
+        r = requests.post(url, json=payload, timeout=10)
+        if r.status_code == 200:
+            print("[*] Simplepush notification sent.")
+        else:
+            print("[!] Simplepush error:", r.status_code, r.text)
+    except Exception as e:
+        print("[!] Simplepush exception:", e)
 
 
 def get_flight_id(flight):
@@ -61,12 +83,10 @@ def get_flight_data(flight_id):
 
 
 def extract_times(info):
-
     t = info.get("time", {})
 
     sched_dep = t.get("scheduled", {}).get("departure")
     real_dep = t.get("real", {}).get("departure")
-
     departure = real_dep or sched_dep
 
     sched_arr = t.get("scheduled", {}).get("arrival")
@@ -77,7 +97,6 @@ def extract_times(info):
     landed_utc = status.get("generic", {}).get("eventTime", {}).get("utc")
 
     arrival = est_arr or real_arr or sched_arr or landed_utc
-
     return departure, arrival
 
 
@@ -93,7 +112,17 @@ def calc_progress(dep, arr):
     prog = (now - dep) / dur
     return max(0.0, min(1.0, prog))
 
+
 def main():
+    parser = argparse.ArgumentParser(description="Flight progress monitor")
+    parser.add_argument("--push", action="store_true",
+                        help="Send Simplepush notification on landing")
+    parser.add_argument("--push-key", help="Simplepush key (required with --push)")
+    args = parser.parse_args()
+
+    if args.push and not args.push_key:
+        print("[!] --push requires --push-key")
+        sys.exit(1)
 
     flight = input("Please enter flight number (z.B. DE1415): ").strip().upper()
 
@@ -103,7 +132,6 @@ def main():
 
     print("\n[*] Catching Flight data…")
     info = get_flight_data(flight_id)
-
     if not info:
         print("[!] No Data received.")
         return
@@ -121,11 +149,12 @@ def main():
         f"  Reg      : {reg}\n"
         f"  Scheduled Departure: {conv(dep)}\n"
         f"  Scheduled Arrival  : {conv(arr)}\n"
-)
+    )
+
+    push_sent = False
 
     while True:
         clear_screen()
-
         print(flight_info_text)
 
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -143,12 +172,17 @@ def main():
 
         if prog >= 1.0:
             print("[*] Plane seems to have landed")
+
+            if args.push and not push_sent:
+                send_simplepush(ident, args.push_key)
+                push_sent = True
+
             break
 
-        time.sleep(180)  # wait 3 minutes
+        time.sleep(180)
         info = get_flight_data(flight_id)
         dep, arr = extract_times(info)
 
 
-
-main()
+if __name__ == "__main__":
+    main()

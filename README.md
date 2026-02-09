@@ -25,3 +25,13 @@ Flighttracker tries to make it more easy. It is a simple tool in Python 3 that a
 
 
 By default, the tool retrieves the latest data from [flightradar24](https://www.flightradar24.com) every 180 seconds (3 minutes) and updates the output. Should work with every airline that flightradar24 lists, I mainly checked with flights by  [Condor](https://www.condor.com/de).
+
+## Push notifications
+You have the option to send a push notification when the tracked flight lands using the `--push` option. The script uses [simplepush.io](https://simplepush.io) for this.
+
+To send the push notification, you first need to create the "landed" event in Simplepush and generate a key. Then you can call flighttracker.py with your key:
+```python
+./flighttracker.py --push --push-key KEY
+```
+The script will then send a push notification to your smartphone after the flight has landed.
+(If you don't want to remmember your key every time, just set a bash/zsh-variable to the above command, so flighttracker gets called every time with your key.)
